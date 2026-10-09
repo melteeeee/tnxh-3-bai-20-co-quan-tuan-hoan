@@ -55,10 +55,8 @@ button{font-family:inherit}
 
 /* thanh các phần (pill, như .steps của template) */
 .steps{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);flex:0 0 auto}
-.steps-scroll{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:1;min-width:0;cursor:grab}
+.steps-scroll{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:1;min-width:0}
 .steps-scroll::-webkit-scrollbar{display:none}
-.steps-scroll.dragging{cursor:grabbing;scroll-snap-type:none}
-.steps-scroll.dragging .step{pointer-events:none}
 .step{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 13px 7px 8px;border-radius:99px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
 .step b{width:20px;height:20px;border-radius:99px;background:var(--brand-soft);color:var(--brand-dark);font-size:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .step:hover{border-color:var(--brand-light)}
@@ -186,26 +184,7 @@ const PARTS = [{title:"Khởi động: Xem video",labels:["Khởi động: Xem v
   const visited=new Set();
 
   stepsBar.innerHTML = STEPS.map((s,i)=>'<button class="step" type="button" role="tab" data-i="'+i+'"><b>'+(i+1)+'</b><span>'+s.label+'</span></button>').join('');
-  let stepsBarDragged=false;
-  stepsBar.addEventListener('click',(e)=>{ if(stepsBarDragged) return; const b=e.target.closest('.step'); if(b) go(+b.dataset.i); });
-  (function(){
-    let isDown=false, startX=0, startScroll=0;
-    stepsBar.addEventListener('mousedown',(e)=>{
-      isDown=true; stepsBarDragged=false; startX=e.pageX; startScroll=stepsBar.scrollLeft;
-      stepsBar.classList.add('dragging');
-    });
-    window.addEventListener('mousemove',(e)=>{
-      if(!isDown) return;
-      const dx=e.pageX-startX;
-      if(Math.abs(dx)>3) stepsBarDragged=true;
-      stepsBar.scrollLeft = startScroll - dx;
-      e.preventDefault();
-    });
-    window.addEventListener('mouseup',()=>{
-      if(!isDown) return;
-      isDown=false; stepsBar.classList.remove('dragging');
-    });
-  })();
+  stepsBar.addEventListener('click',(e)=>{ const b=e.target.closest('.step'); if(b) go(+b.dataset.i); });
 
   function showToast(msg){
     toast.textContent=msg; toast.classList.add('show');
